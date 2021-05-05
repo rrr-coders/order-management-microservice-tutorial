@@ -1,0 +1,23 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://0.0.0.0:8761/eureka}
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}
+server:
+  port: 9000
+spring:
+  application:
+    name: products
+  profiles:
+    active: development
+  cloud:
+    config:
+      failFast: true
+      retry:
+        max-attempts: 20
+        max-interval: 15000
+        initial-interval: 10000
+      discovery:
+        enabled: true
+        service-id: CONFIG-SERVER

@@ -1,0 +1,16 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: development
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${CONFIG_FOLDER:file:///media/rahul/Light/Workspace/sample-config}
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://0.0.0.0:8761/eureka}

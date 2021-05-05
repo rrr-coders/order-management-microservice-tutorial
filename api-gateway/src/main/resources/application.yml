@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    discovery:
+      enabled: true
+    gateway:
+      routes:
+        - id: ordersModule
+          uri: lb://ORDERS
+          predicates:
+            - Path=/order-ms/**
+        - id: productModule
+          uri: lb://PRODUCTS
+          predicates:
+            - Path=/product-ms/**
