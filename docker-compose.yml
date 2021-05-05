@@ -1,7 +1,9 @@
-version: '3'
+version: '3.9'
 services:
   mysqldb:
     image: mysql:latest
+    networks:
+      - mynet1
     ports: 
       - "3306:3306"
     environment: 
@@ -9,6 +11,8 @@ services:
 
   discovery:
     image: eureka-server:1.0
+    networks:
+      - mynet1
     ports:
       - 8761:8761
     depends_on: 
@@ -16,6 +20,8 @@ services:
       
   config:
     image: configserver:1.0
+    networks:
+      - mynet1
     volumes: 
       - ./configuration:/var/config
     environment:
@@ -28,6 +34,8 @@ services:
 
   api-gateway:
     image: api-gateway:1.0
+    networks:
+      - mynet1
     environment:
       - EUREKA_SERVER=http://discovery:8761/eureka 
     ports:
@@ -37,6 +45,8 @@ services:
 
   products:
     image: product:1.0
+    networks:
+      - mynet1
     ports:
       - "9000:9000"       
     environment:
@@ -50,6 +60,8 @@ services:
 
   orders:
     image: orders:1.0
+    networks:
+      - mynet1
     ports:
       - "8000:8000"  
     environment:
@@ -59,5 +71,8 @@ services:
       - discovery
       - config
       - mysqldb
-      - products
-    restart: on-failure  
+      
+networks:
+  mynet1:
+    driver: overlay
+    attachable: true
