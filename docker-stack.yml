@@ -43,31 +43,33 @@ services:
     depends_on: 
       - discovery
 
-networks:
-  ordernet:
-    driver: overlay
+  products:
+    image: imrahulr1795/product:1.0    
+    networks:
+      - ordernet
+    ports:
+      - "9000:9000"       
+    environment:
+      - EUREKA_SERVER=http://discovery:8761/eureka 
+      - MYSQL_URI=jdbc:mysql://mysqldb:3306/product_db?createDatabaseIfNotExist=true
+    depends_on: 
+      - discovery
+      - config
+      - mysqldb
+    restart: on-failure
 
-  # products:
-  #   image: imrahulr1795/product:1.0    
-  #   ports:
-  #     - "9000:9000"       
-  #   environment:
-  #     - EUREKA_SERVER=http://discovery:8761/eureka 
-  #     - MYSQL_URI=jdbc:mysql://mysqldb:3306/product_db?createDatabaseIfNotExist=true
-  #   depends_on: 
-  #     - discovery
-  #     - config
-  #     - mysqldb
-  #   restart: on-failure
+  orders:
+    image: imrahulr1795/orders:1.0    
+    networks:
+      - ordernet
+    ports:
+      - "8000:8000"  
+    environment:
+      - EUREKA_SERVER=http://discovery:8761/eureka 
+      - MYSQL_URI=jdbc:mysql://mysqldb:3306/orders_db?createDatabaseIfNotExist=true
+    depends_on: 
+      - discovery
+      - config
+      - mysqldb
 
-  # orders:
-  #   image: imrahulr1795/orders:1.0    
-  #   ports:
-  #     - "8000:8000"  
-  #   environment:
-  #     - EUREKA_SERVER=http://discovery:8761/eureka 
-  #     - MYSQL_URI=jdbc:mysql://mysqldb:3306/orders_db?createDatabaseIfNotExist=true
-  #   depends_on: 
-  #     - discovery
-  #     - config
-  #     - mysqldb
+networks: ordernet
