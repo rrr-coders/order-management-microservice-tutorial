@@ -56,6 +56,7 @@ services:
       - mysqldb
     deploy:
       endpoint_mode: dnsrr    
+      replicas: 2
 
   orders:
     image: imrahulr1795/orders:1.0    
