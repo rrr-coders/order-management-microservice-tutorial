@@ -2,6 +2,8 @@ version: '3.9'
 services:
   mysqldb:
     image: mysql:latest    
+    networks:
+      - ordernet
     ports: 
       - "3306:3306"
     environment: 
@@ -9,6 +11,8 @@ services:
 
   discovery:
     image: imrahulr1795/eureka-server:1.0    
+    networks:
+      - ordernet
     ports:
       - 8761:8761
     depends_on: 
@@ -16,6 +20,8 @@ services:
       
   config:
     image: imrahulr1795/configserver:1.0    
+    networks:
+      - ordernet
     volumes: 
       - ./configuration:/var/config
     environment:
@@ -28,12 +34,18 @@ services:
 
   api-gateway:
     image: imrahulr1795/api-gateway:1.0    
+    networks:
+      - ordernet
     environment:
       - EUREKA_SERVER=http://discovery:8761/eureka 
     ports:
       - "8080:8080"
     depends_on: 
       - discovery
+
+networks:
+  ordernet:
+    driver: overlay
 
   # products:
   #   image: imrahulr1795/product:1.0    
