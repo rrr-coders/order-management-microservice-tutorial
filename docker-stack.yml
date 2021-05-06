@@ -1,0 +1,61 @@
+version: '3.9'
+services:
+  mysqldb:
+    image: mysql:latest    
+    ports: 
+      - "3306:3306"
+    environment: 
+      - MYSQL_ROOT_PASSWORD=password
+
+  discovery:
+    image: imrahulr1795/eureka-server:1.0    
+    ports:
+      - 8761:8761
+    depends_on: 
+      - mysqldb
+      
+  config:
+    image: imrahulr1795/configserver:1.0    
+    volumes: 
+      - ./configuration:/var/config
+    environment:
+      - EUREKA_SERVER=http://discovery:8761/eureka 
+      - CONFIG_FOLDER=file:///var/config
+    ports:
+      - 8888:8888
+    depends_on: 
+      - discovery
+
+  api-gateway:
+    image: imrahulr1795/api-gateway:1.0    
+    environment:
+      - EUREKA_SERVER=http://discovery:8761/eureka 
+    ports:
+      - "8080:8080"
+    depends_on: 
+      - discovery
+
+  # products:
+  #   image: imrahulr1795/product:1.0    
+  #   ports:
+  #     - "9000:9000"       
+  #   environment:
+  #     - EUREKA_SERVER=http://discovery:8761/eureka 
+  #     - MYSQL_URI=jdbc:mysql://mysqldb:3306/product_db?createDatabaseIfNotExist=true
+  #   depends_on: 
+  #     - discovery
+  #     - config
+  #     - mysqldb
+  #   restart: on-failure
+
+  # orders:
+  #   image: imrahulr1795/orders:1.0    
+  #   ports:
+  #     - "8000:8000"  
+  #   environment:
+  #     - EUREKA_SERVER=http://discovery:8761/eureka 
+  #     - MYSQL_URI=jdbc:mysql://mysqldb:3306/orders_db?createDatabaseIfNotExist=true
+  #   depends_on: 
+  #     - discovery
+  #     - config
+  #     - mysqldb
