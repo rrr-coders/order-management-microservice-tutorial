@@ -46,9 +46,7 @@ services:
   products:
     image: imrahulr1795/product:1.0    
     networks:
-      - ordernet
-    ports:
-      - "9000:9000"       
+      - ordernet     
     environment:
       - EUREKA_SERVER=http://discovery:8761/eureka 
       - MYSQL_URI=jdbc:mysql://mysqldb:3306/product_db?createDatabaseIfNotExist=true
@@ -56,14 +54,13 @@ services:
       - discovery
       - config
       - mysqldb
-    restart: on-failure
+    deploy:
+      endpoint_mode: dnsrr    
 
   orders:
     image: imrahulr1795/orders:1.0    
     networks:
       - ordernet
-    ports:
-      - "8000:8000"  
     environment:
       - EUREKA_SERVER=http://discovery:8761/eureka 
       - MYSQL_URI=jdbc:mysql://mysqldb:3306/orders_db?createDatabaseIfNotExist=true
@@ -71,6 +68,8 @@ services:
       - discovery
       - config
       - mysqldb
+    deploy:
+      endpoint_mode: dnsrr
 
 networks: 
   ordernet: 
