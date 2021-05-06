@@ -72,4 +72,5 @@ services:
       - config
       - mysqldb
 
-networks: ordernet
+networks: 
+  ordernet: 
